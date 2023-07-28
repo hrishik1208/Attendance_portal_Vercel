@@ -1,0 +1,40 @@
+{% extends 'basic.html' %}
+{% block name %} {{ name }} {% endblock %}
+{% block navlist4 %} btn btn-outline-secondary {% endblock  %}
+{% block body %}
+<center>
+    <div style="background-color:#F3F4F6;padding:3%;" class="col-md-11 col-sm-12">
+    <div style="background-color:white;" class="container"><h3>
+      <br>
+      Attendance Insights
+    </h3><br>
+      <div class="row">
+        <center>
+          <div class="col-md-12 col-sm-12">
+    <table class="table">
+      <thead>
+        <tr style="background-color:#F5F5F5;">
+          <th scope="col">#</th>
+          <th scope="col">Date</th>
+          <th scope="col">Course</th>
+          <th scope="col">Detail Insights</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in data %}
+        <tr>
+          <th scope="row">{{ forloop.counter }}</th>
+          <td>{{ i.date }}</td>
+          <td>{{i.course_name}}</td>
+          <form action="/insights" method="POST">{% csrf_token %}
+          <td><button name="detail" value="{{ i.time_present }}" class="btn btn-primary">Details</button></td></form>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table></center>
+    </div>
+    </div></div>
+    </div> </center>
+{% endblock  %}
+
+

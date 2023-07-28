@@ -1,0 +1,113 @@
+{% extends 'basic.html' %}
+{% block script %} <script src="/static/Js/courses.js"></script> {% endblock  %}
+{% block name %} {{ name }} {% endblock %}
+{% block style %} style="background-color:#F5F5F5;" {% endblock  %}
+{% block navlist2 %} btn btn-outline-secondary {% endblock  %} 
+
+{% block body %}
+
+
+<hr>
+<br><br>
+<center>
+    <div style="width: 60%;font-size: 20px">
+        <div class="card card-body">
+          <!-- Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger. -->
+          <form  action='/course' method ="POST">
+              {% csrf_token %}
+                <div class="container"><h4>Course : {{course}}</h4></div>
+                <hr>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Active time duration</label><br> 
+              <input type="number" class="form-control" name='time' id="exampleInputPassword1" placeholder="time in minutes" required >
+            </div>
+            <br>
+            <hr>
+           <div class="form-group">
+            <div class="form-check">
+              
+              <input value="onboard" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" onclick="fun1()" checked>
+              <label class="form-check-label" for="flexRadioDefault">
+                Disallow Geolocation
+              </label>
+            </div>
+            <hr>
+            <div class="form-check">
+              <input value="onboard" class="form-check-input" type="radio" name="flexRadioDefault" onclick="fun2()" id="flexRadioDefault2" >
+              <label class="form-check-label" for="flexRadioDefault">
+                Allow Geolocation <br>
+              </label>
+            </div>
+           </div>
+           <div id="Fun1"></div><br>
+           <div id="map"></div><br>
+            
+            
+            <div >
+              <input class="form-control" name="radius" id="Fun2" type="number" placeholder="Radius Distance in metres" required >
+            </div>
+            <br>
+            <button value="{{course}}" name="course_name" type="submit" class="btn btn-primary">Start Taking Attendance</button>
+          </form>
+        </div>
+      </div>
+</center>
+<br><br><br><br>
+<script>
+  var response=0;
+  document.getElementById("Fun2").disabled = true;
+  function fun1(){
+    response=0;
+    document.getElementById("Fun2").disabled = true;
+    document.getElementById("Fun1").innerHTML = ' ';
+    document.getElementById("map").innerHTML = ' ';
+    document.getElementById("map").style.height = "0px";
+  }
+
+
+  function fun2(){
+    document.getElementById("map").style.height = "400px";
+    
+    if('geolocation' in navigator){
+      navigator.geolocation.getCurrentPosition(position=>{
+        var latitude=position.coords.latitude;
+        var longitude=position.coords.longitude;
+        console.log(latitude,longitude);
+      var a= latitude.toString();
+      var b= longitude.toString();
+      var v= a.concat("+",b);
+        response=1;
+        
+       document.getElementById("flexRadioDefault2").value = v;
+        document.getElementById("Fun2").disabled = false;
+       
+        var options = {
+          center: {lat:latitude,lng:longitude},
+          zoom:13
+      }
+  
+      var map = new google.maps.Map(document.getElementById('map'),options);
+  
+      var markerOptions={
+          position: new google.maps.LatLng(latitude,longitude),
+          map: map
+      }
+  
+      var marker= new google.maps.Marker(markerOptions)
+    
+
+        },error=>{
+        alert("Please allow location and check your internet connectivity");
+      });
+    }
+    else{
+      alert("Not Supported");
+    }
+  }
+  
+  function initMap(){
+    }
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjIW074C0g8UlUxBGsYlxzhE1T2kKyFaU"></script>
+
+{% endblock %}
